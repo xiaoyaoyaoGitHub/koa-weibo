@@ -12,8 +12,10 @@ const redisStore = require('koa-redis');
 const { REDIS_CONF } = require('./conf/db');
 const { SECRET } = require('./conf/constance');
 
-const index = require('./routes/index')
-const users = require('./routes/users')
+// const index = require('./routes/index')
+// const users = require('./routes/users')
+const userViewRouter = require('./routes/view/user');
+const UserApiRouter = require('./routes/api/user');
 const error = require('./routes/view/error')
 
 // error handler
@@ -29,11 +31,11 @@ app.use(bodyparser({
 }))
 app.use(json())
 app.use(logger())
-app.use(jwtKoa({ //jwt验证
-    secret: SECRET
-}).unless({
-    path: [/^\/users\/login/] //自定义哪些目录忽略jwt验证
-}))
+// app.use(jwtKoa({ //jwt验证
+//     secret: SECRET
+// }).unless({
+//     path: [/^\/users\/login/] //自定义哪些目录忽略jwt验证
+// }))
 app.use(require('koa-static')(__dirname + '/public'))
 
 app.use(views(__dirname + '/views', {
@@ -67,9 +69,10 @@ app.use(session({
 // })
 
 // routes
-app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
-app.use(error.routes(), error.allowedMethods())
+// app.use(index.routes(), index.allowedMethods())
+app.use(userViewRouter.routes(), userViewRouter.allowedMethods());
+app.use(UserApiRouter.routes(), UserApiRouter.allowedMethods());
+app.use(error.routes(), error.allowedMethods()) // error和404一定要最后注册
 
 // error-handling
 app.on('error', (err, ctx) => {

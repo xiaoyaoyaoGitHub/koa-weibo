@@ -9,12 +9,12 @@ const { isProd, isTest } = require('./../utils/env');
 const seq = new Sequelize(MYSQL_CONF.database, MYSQL_CONF.user, MYSQL_CONF.password, {
     host: MYSQL_CONF.host,
     dialect: 'mysql',
-    pool: isProd && {
-        max: 5,
-        min: 0,
-        idle: 100000, //如果连接10s内没有被使用,则释放
-    },
-    logging: isTest && (() => {})
+    // pool: isProd ? {
+    //     max: 5,
+    //     min: 0,
+    //     idle: 100000, //如果连接10s内没有被使用,则释放
+    // } : {},
+    // logging: isTest && (() => {})
 });
 
 
