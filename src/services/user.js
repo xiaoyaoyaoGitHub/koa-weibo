@@ -23,16 +23,30 @@ async function getUserInfo(userName, password) {
         attributes: ['id', 'userName', 'nickName', 'picture', 'city'],
         where: whereOpt,
     });
-    if(result == null) { //如果不存在
+    if (result == null) { //如果不存在
         return result
     }
-    // console.log(result)
     // 格式化
     const formatRes = formatUser(result.dataValues);
     return formatRes
 }
 
+/**
+ *创建用户
+ *
+ * @param {string, string, number, string} {userName, password, gender, nickName}
+ */
+async function createUser({ userName, password, gender = 3, nickName }) {
+    const result = await User.create({
+        userName,
+        password,
+        nickName: nickName ? nickName : userName,
+        gender
+    });
+    return result.dataValues
+}
 
 module.exports = {
-    getUserInfo
+    getUserInfo,
+    createUser
 }

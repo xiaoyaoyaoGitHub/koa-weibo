@@ -10,7 +10,7 @@ const session = require('koa-generic-session');
 const redisStore = require('koa-redis');
 
 const { REDIS_CONF } = require('./conf/db');
-const { SECRET } = require('./conf/constance');
+const { SESSION_SECRET_KEY } = require('./conf/secretKeys');
 
 // const index = require('./routes/index')
 // const users = require('./routes/users')
@@ -45,7 +45,7 @@ app.use(views(__dirname + '/views', {
 /*
   session 配置
 */
-app.keys = ['Wangly_1115%$$#']; //加密
+app.keys = [SESSION_SECRET_KEY]; //加密
 app.use(session({
     key: 'weibo.sid', // cookie name 默认koa.sid
     prefix: 'weibo:sess:', //redis key的前缀,默认koa:sess:
