@@ -46,7 +46,8 @@ async function createUser({ userName, password, gender = 3, nickName }) {
     return result.dataValues
 }
 
+
 module.exports = {
     getUserInfo,
-    createUser
+    createUser,
 }
