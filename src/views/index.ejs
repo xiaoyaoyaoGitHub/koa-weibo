@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title><%= locals.title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>EJS Welcome to <%= title %></p>
+    <h1><%= locals.title %></h1>
+    <p>EJS Welcome to <%= locals.title %></p>
     <div>
-      <% if( title.length != 2){ %>
+      <% if( locals.title.length != 2){ %>
         <a href="#">哈哈哈哈,没我长</a>
       <% } %>
     </div>

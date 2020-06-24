@@ -12,8 +12,7 @@ const redisStore = require('koa-redis');
 const { REDIS_CONF } = require('./conf/db');
 const { SESSION_SECRET_KEY } = require('./conf/secretKeys');
 
-// const index = require('./routes/index')
-// const users = require('./routes/users')
+const index = require('./routes/index')
 const userViewRouter = require('./routes/view/user');
 const UserApiRouter = require('./routes/api/user');
 const error = require('./routes/view/error')
@@ -69,7 +68,7 @@ app.use(session({
 // })
 
 // routes
-// app.use(index.routes(), index.allowedMethods())
+app.use(index.routes(), index.allowedMethods())
 app.use(userViewRouter.routes(), userViewRouter.allowedMethods());
 app.use(UserApiRouter.routes(), UserApiRouter.allowedMethods());
 app.use(error.routes(), error.allowedMethods()) // error和404一定要最后注册
