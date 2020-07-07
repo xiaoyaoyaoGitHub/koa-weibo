@@ -2,9 +2,9 @@
  * @description user conthroller
 */
 
-const { getUserInfo, createUser } = require('./../services/user');
+const { getUserInfo, createUser, deleteUser, updateUser } = require('./../services/user');
 const { SuccessModel, ErrorModel } = require('./../model/ResModel');
-const { registerUserNameNotExistInfo, registerUserNameExistInfo, registerFailInfo, loginFailInfo } = require('./../model/ErrorInfo');
+const { registerUserNameNotExistInfo, changeInfoFailInfo, registerUserNameExistInfo, registerFailInfo, loginFailInfo, deleteUserFailInfo } = require('./../model/ErrorInfo');
 const { doCrypto } = require('./../utils/cryp');
 /**
  *用户名是否存在
@@ -20,6 +20,31 @@ async function isExist(userName) {
     }
 
 }
+
+/**
+ *修改用户信息
+ *
+ * @param {*} ctx
+ * @param {string, string, string} { nickName, city, genter }  昵称, 城市, 性别
+ * @returns
+ */
+async function changeInfo(ctx, { nickName, city, gender }) {
+    let { userName } = ctx.session && ctx.session.userInfo;
+    if (!nickName) {
+        nickName = userName
+    };
+    // 调用service  
+    let res = await updateUser({ nickName, city, gender }, { userName })
+    if (res) { //更新成功
+        Object.assign(ctx.session.userInfo, {
+            nickName, city, gender
+        });
+        return new SuccessModel();
+    } else {
+        return new ErrorModel(changeInfoFailInfo)
+    }
+}
+
 
 /**
  *注册
@@ -57,14 +82,30 @@ async function login(ctx, userName, password) {
         return new ErrorModel(loginFailInfo)
     }
     // 登录成功
-    if(ctx.session.userInfo == null){
+    if (ctx.session.userInfo == null) {
         ctx.session.userInfo = userInfo
     }
     return new SuccessModel()
 }
 
+/**
+ *删除当前用户
+ *
+ * @param {*} userName
+ */
+async function deleteCurUser(userName) {
+    // service
+    let res = await deleteUser(userName);
+    if (res) { //删除成功
+        return new SuccessModel()
+    }
+    // 删除失败
+    return new ErrorModel(deleteUserFailInfo);
+}
+
 module.exports = {
     isExist,
     register,
-    login
+    login,
+    deleteCurUser
 }

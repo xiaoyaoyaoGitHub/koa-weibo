@@ -7,13 +7,14 @@
     "dev": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon bin/www",
     "dev:debug": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon --inspect=9229 bin/www",
     "prd": "cross-env NODE_ENV=production pm2 start bin/www",
-    "test": "cross-env NODE_ENV=test jest --runInBand --forceExit --colors",
+    "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles --forceExit --colors",
     "lint": "eslint --ext .js ./src"
   },
   "dependencies": {
     "ajv": "^6.12.2",
     "debug": "^4.1.1",
     "ejs": "~2.3.3",
+    "formidable-upload-koa": "^1.0.1",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",

@@ -46,8 +46,50 @@ async function createUser({ userName, password, gender = 3, nickName }) {
     return result.dataValues
 }
 
+/**
+ *删除用户
+ *
+ * @param {string} userName 用户名 
+ */
+async function deleteUser(userName) {
+    const result = await User.destory({
+        where: {
+            userName
+        }
+    });
+    return result > 0 //result 返回删除的行数
+}
+
+/**
+ *更新用户信息
+ *
+ * @param {Object} 要修改的内容 { password: newPassword, nickName: newNickName, city: newCity, genter: newGender }
+ * @param {Object} 查询条件 { userName, password }
+ */
+async function updateUser({ password: newPassword, nickName: newNickName, city: newCity, genter: newGender }, { userName, password }) {
+    let whereData = { userName }; //查询条件
+    let updateData = {}; //更新的数据
+    if (newPassword){
+        updateData.newPassword = newPassword
+    }
+    if (newNickName){
+        updateData.newNickName = newNickName
+    }
+    if (newCity){
+        updateData.newCity = newCity
+    }
+    if (newGender){
+        updateData.newGender = newGender
+    }
+    const result = await  User.update(updateData, {
+        where: whereData
+    });
+    return result[0] > 0 //修改的行数
+}
 
 module.exports = {
     getUserInfo,
     createUser,
+    deleteUser,
+    updateUser
 }
