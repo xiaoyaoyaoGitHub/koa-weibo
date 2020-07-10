@@ -4,7 +4,7 @@
 
 const { getUserInfo, createUser, deleteUser, updateUser } = require('./../services/user');
 const { SuccessModel, ErrorModel } = require('./../model/ResModel');
-const { registerUserNameNotExistInfo, changeInfoFailInfo, registerUserNameExistInfo, registerFailInfo, loginFailInfo, deleteUserFailInfo } = require('./../model/ErrorInfo');
+const { registerUserNameNotExistInfo, changePasswordFailInfo, changeInfoFailInfo, registerUserNameExistInfo, registerFailInfo, loginFailInfo, deleteUserFailInfo } = require('./../model/ErrorInfo');
 const { doCrypto } = require('./../utils/cryp');
 /**
  *用户名是否存在
@@ -22,29 +22,41 @@ async function isExist(userName) {
 }
 
 /**
- *修改用户信息
+ *修改用户基本信息
  *
- * @param {*} ctx
- * @param {string, string, string} { nickName, city, genter }  昵称, 城市, 性别
- * @returns
+ * @param {string, string, string} {nickName}=,city, picture } 昵称 城市 头像
  */
-async function changeInfo(ctx, { nickName, city, gender }) {
-    let { userName } = ctx.session && ctx.session.userInfo;
+async function changeUserInfo(ctx, { nickName, city, picture }) {
+    let { userName } = ctx.session.userInfo; //从缓存中获取用户名
     if (!nickName) {
         nickName = userName
-    };
-    // 调用service  
-    let res = await updateUser({ nickName, city, gender }, { userName })
-    if (res) { //更新成功
-        Object.assign(ctx.session.userInfo, {
-            nickName, city, gender
-        });
-        return new SuccessModel();
-    } else {
-        return new ErrorModel(changeInfoFailInfo)
     }
+
+    // 调取service 更新用户信息
+    const result = await updateUser({ nickName, city, picture }, { userName });
+    if (result) { //更新成功
+        Object.assign(ctx.session.userInfo, { nickName, city, picture });
+        return new SuccessModel()
+    }
+    return new ErrorModel(changeInfoFailInfo)
 }
 
+/**
+ *修改密码
+ *
+ * @param {string} userName 
+ * @param {string} password
+ * @param {string} newPassword
+ */
+async function changePassword({ password, newPassword, userName }) {
+    // 调用service
+    let result = await updateUser({ password: doCrypto(newPassword) }, { userName, password: doCrypto(password) });
+    
+    if (result) {
+        return new SuccessModel()
+    }
+    return new ErrorModel(changePasswordFailInfo)
+}
 
 /**
  *注册
@@ -107,5 +119,7 @@ module.exports = {
     isExist,
     register,
     login,
-    deleteCurUser
+    deleteCurUser,
+    changeUserInfo,
+    changePassword
 }

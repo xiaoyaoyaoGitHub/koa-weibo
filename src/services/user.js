@@ -66,22 +66,25 @@ async function deleteUser(userName) {
  * @param {Object} 要修改的内容 { password: newPassword, nickName: newNickName, city: newCity, genter: newGender }
  * @param {Object} 查询条件 { userName, password }
  */
-async function updateUser({ password: newPassword, nickName: newNickName, city: newCity, genter: newGender }, { userName, password }) {
+async function updateUser({ password: newPassword, nickName: newNickName, city: newCity, picture, genter: newGender }, { userName, password }) {
     let whereData = { userName }; //查询条件
     let updateData = {}; //更新的数据
-    if (newPassword){
-        updateData.newPassword = newPassword
+    if (newPassword) {
+        updateData.password = newPassword
     }
-    if (newNickName){
-        updateData.newNickName = newNickName
+    if (newNickName) {
+        updateData.nickName = newNickName
     }
-    if (newCity){
-        updateData.newCity = newCity
+    if (newCity) {
+        updateData.city = newCity
     }
-    if (newGender){
-        updateData.newGender = newGender
+    if (newGender) {
+        updateData.gender = newGender
     }
-    const result = await  User.update(updateData, {
+    if(picture){
+        updateData.picture = picture
+    }
+    const result = await User.update(updateData, {
         where: whereData
     });
     return result[0] > 0 //修改的行数
